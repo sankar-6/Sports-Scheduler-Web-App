@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Scheduler</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/activity-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-futbol"></i>
+                <span>Sports Scheduler</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <div class="nav-item" id="homeNav">
+                    <a href="#" onclick="showSection('home')">Home</a>
+                </div>
+                <div class="nav-item" id="sessionsNav">
+                    <a href="#" onclick="showSection('sessions')">Sessions</a>
+                </div>
+                <div class="nav-item" id="mySessionsNav" style="display: none;">
+                    <a href="#" onclick="showSection('mySessions')">My Sessions</a>
+                </div>
+                <div class="nav-item" id="activityNav" style="display: none;">
+                    <a href="#" onclick="showSection('activity')">Activity</a>
+                </div>
+                <div class="nav-item" id="adminNav" style="display: none;">
+                    <a href="#" onclick="showSection('admin')">Admin</a>
+                </div>
+                <div class="nav-item" id="authNav">
+                    <a href="#" onclick="showSection('auth')">Sign In</a>
+                </div>
+                <div class="nav-item" id="userNav" style="display: none;">
+                    <span id="userName"></span>
+                    <button onclick="showChangePasswordModal()" class="btn btn-outline">Change Password</button>
+                    <button onclick="signOut()" class="btn btn-outline">Sign Out</button>
+                </div>
+            </div>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <h1>Welcome to Sports Scheduler</h1>
+                <p>Find and join sports sessions in your area, or create your own!</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="showSection('sessions')">Browse Sessions</button>
+                    <button class="btn btn-secondary" onclick="showSection('auth')">Get Started</button>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-calendar-plus"></i>
+                    <h3>Create Sessions</h3>
+                    <p>Create sports sessions and invite other players to join</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Join Sessions</h3>
+                    <p>Browse and join available sports sessions in your area</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Track Activity</h3>
+                    <p>Keep track of your sessions and sports activity</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Authentication Section -->
+        <section id="auth" class="section">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchAuthTab('signin')">Sign In</button>
+                    <button class="tab-btn" onclick="switchAuthTab('signup')">Sign Up</button>
+                </div>
+
+                <!-- Sign In Form -->
+                <form id="signinForm" class="auth-form">
+                    <h2>Sign In</h2>
+                    <div class="form-group">
+                        <label for="signinEmail">Email</label>
+                        <input type="email" id="signinEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signinPassword">Password</label>
+                        <input type="password" id="signinPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                    <div class="form-links">
+                        <a href="#" onclick="showForgotPasswordModal()" class="forgot-password-link">Forgot Password?</a>
+                    </div>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form id="signupForm" class="auth-form" style="display: none;">
+                    <h2>Sign Up</h2>
+                    <div class="form-group">
+                        <label for="signupName">Name</label>
+                        <input type="text" id="signupName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupRole">Role</label>
+                        <select id="signupRole">
+                            <option value="player">Player</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sessions Section -->
+        <section id="sessions" class="section">
+            <div class="section-header">
+                <h2>Available Sessions</h2>
+                <button class="btn btn-primary" onclick="showCreateSessionForm()" id="createSessionBtn" style="display: none;">
+                    <i class="fas fa-plus"></i> Create Session
+                </button>
+            </div>
+            
+            <!-- Session Filters -->
+            <div class="filter-controls">
+                <input type="text" id="locationFilter" placeholder="Filter by location..." onkeyup="filterSessions()">
+                <select id="sportFilter" onchange="filterSessions()">
+                    <option value="">All Sports</option>
+                </select>
+                <select id="skillFilter" onchange="filterSessions()">
+                    <option value="">All Skill Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+                <button onclick="clearFilters()" class="btn btn-secondary">Clear Filters</button>
+            </div>
+            
+            <div id="sessionsList" class="sessions-grid">
+                <!-- Sessions will be loaded here -->
+            </div>
+        </section>
+
+        <!-- My Sessions Section -->
+        <section id="mySessions" class="section">
+            <div class="section-header">
+                <h2>My Sessions</h2>
+            </div>
+            
+            <div class="my-sessions-container">
+                <div class="sessions-section">
+                    <h3>Sessions I Created</h3>
+                    <div id="createdSessionsList" class="sessions-grid">
+                        <!-- Created sessions will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="sessions-section">
+                    <h3>Sessions I Joined</h3>
+                    <div id="joinedSessionsList" class="sessions-grid">
+                        <!-- Joined sessions will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activity Section -->
+        <section id="activity" class="section">
+            <div class="container">
+                <h2>My Activity</h2>
+                <div class="activity-stats">
+                    <div class="stat-card">
+                        <h3 id="totalCreated">0</h3>
+                        <p>Sessions Created</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalJoined">0</h3>
+                        <p>Sessions Joined</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="activeSessions">0</h3>
+                        <p>Active Sessions</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="sportsPlayed">0</h3>
+                        <p>Sports Played</p>
+                    </div>
+                </div>
+                
+                <div class="activity-content">
+                    <div class="activity-section">
+                        <h3>Recent Activity</h3>
+                        <div id="recentActivity" class="activity-list">
+                            <!-- Activity items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin" class="section">
+            <div class="section-header">
+                <h2>Admin Panel</h2>
+            </div>
+            
+            <div class="admin-container">
+                <div class="admin-section">
+                    <h3>Manage Sports</h3>
+                    <form id="sportForm" class="form">
+                        <div class="form-group">
+                            <label for="sportName">Sport Name</label>
+                            <input type="text" id="sportName" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Sport</button>
+                    </form>
+                    
+                    <div id="sportsList" class="sports-list">
+                        <!-- Sports will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h3>Reports</h3>
+                    <div class="report-filters">
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate">
+                        </div>
+                        <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
+                    </div>
+                    
+                    <div id="reportResults" class="report-results">
+                        <!-- Report results will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Create Session Modal -->
+    <div id="createSessionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Session</h3>
+                <span class="close" onclick="closeCreateSessionModal()">&times;</span>
+            </div>
+            <form id="createSessionForm" class="form">
+                <div class="form-group">
+                    <label for="sessionSport">Select Sport</label>
+                    <select id="sessionSport" required>
+                        <!-- Unique sports will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sessionDate">Date & Time</label>
+                    <input type="datetime-local" id="sessionDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="sessionVenue">Venue</label>
+                    <input type="text" id="sessionVenue" required placeholder="e.g., Central Park, Sports Complex">
+                </div>
+                <div class="form-group">
+                    <label for="sessionDescription">Description (Optional)</label>
+                    <textarea id="sessionDescription" rows="3" placeholder="Add any additional details about the session..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="skillLevel">Skill Level</label>
+                    <select id="skillLevel" required>
+                        <option value="">Select skill level</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="maxPlayers">Maximum Players</label>
+                    <input type="number" id="maxPlayers" min="2" max="50" placeholder="Enter max players" required>
+                </div>
+                <div class="form-group">
+                    <label for="team1Players">Team 1 Players (comma-separated)</label>
+                    <input type="text" id="team1Players" placeholder="Player1, Player2, Player3">
+                </div>
+                <div class="form-group">
+                    <label for="team2Players">Team 2 Players (comma-separated)</label>
+                    <input type="text" id="team2Players" placeholder="Player1, Player2, Player3">
+                </div>
+                <div class="form-group">
+                    <label for="additionalPlayers">Additional Players Needed</label>
+                    <input type="number" id="additionalPlayers" min="0" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateSessionModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Session</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Password</h3>
+                <span class="close" onclick="closeChangePasswordModal()">&times;</span>
+            </div>
+            <form id="changePasswordForm" class="form">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" id="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" required minlength="6">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeChangePasswordModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Forgot Password</h3>
+                <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
+            </div>
+            <form id="forgotPasswordForm" class="form">
+                <div class="form-group">
+                    <label for="forgotEmail">Email Address</label>
+                    <input type="email" id="forgotEmail" required placeholder="Enter your email address">
+                </div>
+                <p class="form-help">We'll send you a password reset link to your email address.</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeForgotPasswordModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Reset Link</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div id="resetPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <span class="close" onclick="closeResetPasswordModal()">&times;</span>
+            </div>
+            <form id="resetPasswordForm" class="form">
+                <div class="form-group">
+                    <label for="resetToken">Reset Token</label>
+                    <input type="text" id="resetToken" required placeholder="Enter the reset token from your email">
+                </div>
+                <div class="form-group">
+                    <label for="resetNewPassword">New Password</label>
+                    <input type="password" id="resetNewPassword" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="resetConfirmPassword">Confirm New Password</label>
+                    <input type="password" id="resetConfirmPassword" required minlength="6">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeResetPasswordModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Reset Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cancel Session Modal -->
+    <div id="cancelSessionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cancel Session</h3>
+                <span class="close" onclick="closeCancelSessionModal()">&times;</span>
+            </div>
+            <form id="cancelSessionForm" class="form">
+                <div class="form-group">
+                    <label for="cancellationReason">Reason for Cancellation</label>
+                    <textarea id="cancellationReason" required rows="4"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCancelSessionModal()">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Cancel Session</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

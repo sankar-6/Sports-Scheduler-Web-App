@@ -1,0 +1,33 @@
+{
+  "name": "sports-scheduler-web-app",
+  "version": "1.0.0",
+  "description": "A comprehensive web application for scheduling sports sessions",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "install-backend": "cd backend && npm install",
+    "install-all": "npm run install-backend",
+    "setup": "npm run install-all"
+  },
+  "keywords": [
+    "sports",
+    "scheduler",
+    "web-app",
+    "mongodb",
+    "express"
+  ],
+  "author": "Sports Scheduler Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/sports-scheduler-web-app.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.12.2"
+  }
+}
